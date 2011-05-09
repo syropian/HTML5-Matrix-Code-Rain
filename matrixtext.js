@@ -3,7 +3,7 @@ var textStrip = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'
 var stripCount = 90, stripX = new Array(), stripY = new Array(), dY = new Array(), stripFontSize = new Array();
 
 for (var i = 0; i < stripCount; i++) {
-    stripX[i] = Math.floor(Math.random()*1265);
+    stripX[i] = Math.floor(Math.random()*1281);
     stripY[i] = -100;
     dY[i] = Math.floor(Math.random()*7)+3;
     stripFontSize[i] = Math.floor(Math.random()*24)+12;
