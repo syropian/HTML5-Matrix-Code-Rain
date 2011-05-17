@@ -9,7 +9,7 @@ var colours = ['#cefbe4', '#81ec72', '#5cd646', '#54d13c', '#43c728']; //possibl
 
 var elem, context, timer; //canvas variables
 
-//Let's make gernating random numbers a little easier
+//Let's make generating random numbers a little easier
 function random(min, max)
 {
 	return Math.floor(Math.random() * max) + min;
