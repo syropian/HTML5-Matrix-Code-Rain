@@ -12,16 +12,17 @@ var elem, context, timer; //canvas variables
 //Let's make generating random numbers a little easier
 function random(min, max)
 {
-	return Math.floor(Math.random() * max) + min;
+         return Math.round((Math.random() * (max-min)) + min);
 }
 
 //initialize some random values for our column's attributes
 for (var i = 0; i <= colCount; i++)
 {
 	colX[i] = random(0,1280);
-	colY[i] = -100;
 	speed[i] = random(3,7);
 	size[i] = random(12,24);
+	colY[i] = -(size[i]*20);;
+	
 	
 }
 
@@ -84,6 +85,8 @@ function draw()
 	
 	    if( colY[i] > elem.height + (size[i]*20) )
 	    {
+		    context.clearRect(0,0,elem.width, elem.height); //clear our canvas
+			
 		    size[i] = random(12,24);
 		    
 		    colX[i] = random(0, elem.width);
