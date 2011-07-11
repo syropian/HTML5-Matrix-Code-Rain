@@ -1,107 +1,63 @@
-var chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-var colCount = 90; //number of falling code columns on screen
-var colX = new Array(); //column's x coordinate
-var colY = new Array(); //column's y coordinate
-var speed = new Array(); //column's speed
-var size = new Array(); //column's size
-var length = 20; //number of chars per column
-var colours = ['#cefbe4', '#81ec72', '#5cd646', '#54d13c', '#43c728']; //possible colours
+var textStrip = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
-var elem, context, timer; //canvas variables
+var stripCount = 90, stripX = new Array(), stripY = new Array(), dY = new Array(), stripFontSize = new Array();
 
-//Let's make generating random numbers a little easier
-function random(min, max)
-{
-         return Math.round((Math.random() * (max-min)) + min);
+for (var i = 0; i < stripCount; i++) {
+    stripX[i] = Math.floor(Math.random()*1265);
+    stripY[i] = -100;
+    dY[i] = Math.floor(Math.random()*7)+3;
+    stripFontSize[i] = Math.floor(Math.random()*24)+12;
 }
 
-//initialize some random values for our column's attributes
-for (var i = 0; i <= colCount; i++)
-{
-	colX[i] = random(0,1280);
-	speed[i] = random(3,7);
-	size[i] = random(12,24);
-	colY[i] = -(size[i]*20);;
-	
-	
+var theColors = ['#cefbe4', '#81ec72', '#5cd646', '#54d13c', '#4ccc32', '#43c728'];
+
+var elem, context, timer;
+
+function drawStrip(x, y) {
+    for (var k = 0; k <= 20; k++) {
+        var randChar = textStrip[Math.floor(Math.random()*textStrip.length)];
+        if (context.fillText) {
+            switch (k) {
+            case 0:
+                context.fillStyle = theColors[0]; break;
+            case 1:
+                context.fillStyle = theColors[1]; break;
+            case 3:
+                context.fillStyle = theColors[2]; break;
+            case 7:
+                context.fillStyle = theColors[3]; break;
+            case 13:
+                context.fillStyle = theColors[4]; break;
+            case 17:
+                context.fillStyle = theColors[5]; break;
+            }
+            context.fillText(randChar, x, y);
+        }
+        y -= stripFontSize[k];
+    }
 }
 
-//set up a function to draw a single column
-function drawCol(x,y)
-{
-	var aChar;
-	
-	for (var i = 0; i <= length; i++)
-	{
-		aChar = chars[random(0,chars.length)]; //ever changing letters!
-	    
-	    //colour different characters of the column
-		if (context.fillText)
-		{
-			switch(i)
-			{
-				case 0:
-				    context.fillStyle = colours[0];
-				    break;
-				case 1:
-				    context.fillStyle = colours[1];
-				    break;
-				case 5:
-				    context.fillStyle = colours[2];
-			        break;
-			    case 10:
-			        context.fillStyle = colours[2];
-				    break;
-				case 15:
-				    context.fillStyle = colours[2];
-		     	    break;
-				case 17:
-				    context.fillStyle = colours[2];
-		            break;
-				    
-			}
-			context.fillText(aChar, x, y);
-		}
-		y -= size[i]; //stack 'em
-	}
-}
-
-//Time to draw 'em all!
-function draw()
-{
-	context.clearRect(0,0,elem.width, elem.height); //clear our canvas
-	
-	//Set our glow offsets to 0, blur and colour it 
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 8;
-	context.shadowColor = '#94f475';
-    context.textBaseline = 'top';
-    context.textAlign = 'center';
-    //Now lets craft some columns!
-    for (var i = 0; i <= colCount; i++)
-    {
-	    context.font = size[i] + 'px MatrixCode';
-	
-	    if( colY[i] > elem.height + (size[i]*20) )
-	    {
-		    context.clearRect(0,0,elem.width, elem.height); //clear our canvas
-			
-		    size[i] = random(12,24);
-		    
-		    colX[i] = random(0, elem.width);
-		    colY[i] = -(size[i]*20);
-		    speed[i] = random(3,7);
-		
-		    drawCol(colX[i], colY[i]); //draw a column
-	    }
-	    else
-	    {
-		    drawCol(colX[i], colY[i]);
-	    }
-	    
-	    colY[i] += speed[i]; //move it!!
-	    
+function draw() {
+    // clear the canvas and set the properties
+    context.clearRect(0, 0, elem.width, elem.height);
+    context.shadowOffsetX = context.shadowOffsetY = 0;
+    context.shadowBlur = 8;
+    context.shadowColor = '#94f475';
+    
+    for (var j = 0; j < stripCount; j++) {
+        context.font = stripFontSize[j]+'px MatrixCode';
+        context.textBaseline = 'top';
+        context.textAlign = 'center';
+        
+        if (stripY[j] > 1358) {
+            stripX[j] = Math.floor(Math.random()*elem.width);
+            stripY[j] = -100;
+            dY[j] = Math.floor(Math.random()*7)+3;
+            stripFontSize[j] = Math.floor(Math.random()*24)+12;
+            drawStrip(stripX[j], stripY[j]);
+        } else drawStrip(stripX[j], stripY[j]);
+        
+        stripY[j] += dY[j];
     }
 }
 
@@ -114,7 +70,5 @@ function init() {
     context = elem.getContext('2d');
     if (!context) return;
     
-    timer = setInterval('draw()', 50);
+    timer = setInterval('draw()', 70);
 }
-
-
